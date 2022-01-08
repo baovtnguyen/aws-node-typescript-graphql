@@ -1,0 +1,56 @@
+service: todo-app-ts
+
+frameworkVersion: '2 || 3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  lambdaHashingVersion: 20201221
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      migrate: true
+      sharedDb: true
+      convertEmptyValues: true
+      noStart: true
+    migration:
+      dir: src/db/offline/migrations
+
+functions:
+  hello:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+# resources:
+#   Resources:
+#     TodosDynamoDBTable:
+#       Type: 'AWS::DynamoDB::Table'
+#       DeletionPolicy: Retain
+#       Properties:
+#         AttributeDefinitions:
+#           - AttributeName: pk
+#             AttributeType: S
+#           - AttributeName: sk
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: pk
+#             KeyType: HASH
+#           - AttributeName: sk
+#             KeyType: RANGE
+#         BillingMode: PAY_PER_REQUEST
+#         TableName: ${env:DYNAMODB_TABLE_NAME}

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true  ,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+    "lib": ["esnext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "lib",
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*",
+    "declarations.d.ts"
+  ],
+  "exclude": [
+    "node_modules/**/*",
+    ".serverless/**/*",
+    ".webpack/**/*",
+    ".vscode/**/*"
+  ]
+}
