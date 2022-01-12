@@ -14,13 +14,17 @@
     "@graphql-tools/load-files": "^6.5.3",
     "@graphql-tools/merge": "^8.2.1",
     "@graphql-tools/schema": "^8.3.1",
+    "@types/node": "^17.0.8",
     "apollo-server-lambda": "^3.5.0",
+    "class-validator": "^0.13.2",
     "dotenv": "^10.0.0",
     "graphql": "^16.2.0",
     "graphql-tools": "^8.2.0",
     "http-status-codes": "^2.1.4",
     "moment": "^2.29.1",
+    "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
+    "type-graphql": "^1.1.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

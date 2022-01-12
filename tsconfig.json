@@ -5,15 +5,14 @@
     "emitDecoratorMetadata": true  ,
     "esModuleInterop": true,
     "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
-    "lib": ["esnext"],
+    "lib": ["esnext", "es2018", "esnext.asynciterable"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "lib",
     "sourceMap": true
   },
   "include": [
-    "src/**/*",
-    "declarations.d.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
   ],
   "exclude": [
     "node_modules/**/*",

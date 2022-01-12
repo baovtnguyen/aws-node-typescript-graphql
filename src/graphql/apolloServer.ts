@@ -1,7 +1,6 @@
 import { ApolloServer } from 'apollo-server-lambda';
 
-import typeDefs from './types';
-import resolvers from './resolvers';
+import { typeDefs, resolvers } from './entity';
 
 import dynamodb from '../libs/db';
 
