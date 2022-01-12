@@ -2,23 +2,27 @@ import { gql } from "apollo-server-lambda";
 
 export default gql`
   type Todo {
-    pk: String!
-    sk: String!
+    todoID: String!
+    userID: String!
     content: String!
     isCompleted: Boolean!
   }
 
   input TodoInput {
-    content: String!
+    userID: String!
+    todoID: String!
+    content: String
     isCompleted: Boolean = false
   }
 
   type Query {
-    hello: String
     getTodos: [Todo!]!
+    getTodosOfUser(userID: String): [Todo!]!
   }
 
   type Mutation {
-    createTodo: String
+    createTodo(userID: String, content: String): Todo!
+    deleteTodo(userID: String, todoID: String!): Todo!
+    updateTodo(todo: TodoInput): Todo!
   }
 `

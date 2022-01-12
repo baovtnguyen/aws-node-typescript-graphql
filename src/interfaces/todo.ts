@@ -1,8 +1,7 @@
 export interface Todo {
-  company: string; // KMS, FPT
-  userId: string;
+  todoID: string;
+  userID: string;
   content: string;
-  isCompleted: string;
-}
+  isCompleted: Boolean;
+};
 
-// company   |  sk
