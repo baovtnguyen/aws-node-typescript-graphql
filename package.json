@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "start-db": "cd src/db/dynamodb && sudo docker-compose up",
     "dev": "sls offline start",
     "format": "prettier --write '**/*.ts'",
     "test": "jest --runInBand --verbose"
