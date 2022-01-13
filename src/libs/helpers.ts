@@ -7,3 +7,6 @@ export const generateTodoSortKey = (userID?: string, todoID?: string) => {
   }
   else return `${env.PREFIX_TODO_SK}`;
 };
+
+export const generateMetadataSortKey = (userID) =>
+  `${env.PREFIX_USER_SK}::${userID}`;

@@ -1,5 +1,8 @@
-export interface User {
-  company: string; // KMS, FPT
-  userId: string;
-  todo: Todo[];
+export interface UserInput {
+  name: string;
+  title: String;
+}
+
+export interface User extends UserInput{
+  userID: string;
 }
