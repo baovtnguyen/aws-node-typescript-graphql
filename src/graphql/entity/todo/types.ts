@@ -17,12 +17,12 @@ export default gql`
 
   type Query {
     getTodos: [Todo!]!
-    getTodosOfUser(userID: String): [Todo!]!
+    getTodosOfUser(userID: String!): [Todo!]!
   }
 
   type Mutation {
-    createTodo(userID: String, content: String): Todo!
-    deleteTodo(userID: String, todoID: String!): Todo!
-    updateTodo(todo: TodoInput): Todo!
+    createTodo(userID: String!, content: String): Todo!
+    deleteTodo(userID: String!, todoID: String!): Todo!
+    updateTodo(todo: TodoInput!): Todo!
   }
 `
