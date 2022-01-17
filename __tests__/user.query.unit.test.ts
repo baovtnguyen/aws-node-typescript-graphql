@@ -17,13 +17,13 @@ test('should get all users', async () => {
   const DUMMY_USERS = [
     {
       pk: process.env.TODO_APP_PK,
-      sk: `${process.env.PREFIX_METADATA_SK}::2591`,
+      sk: `${process.env.PREFIX_USER_SK}::2591`,
       name: 'Tieu Bao',
       title: 'Fresher Software Developer',
     },
     {
       pk: process.env.TODO_APP_PK,
-      sk: `${process.env.PREFIX_METADATA_SK}::1234`,
+      sk: `${process.env.PREFIX_USER_SK}::1234`,
       name: 'Elon Musk',
       title: 'Senior Software Developer',
     },
