@@ -5,6 +5,7 @@ export default gql`
     userID: String!
     name: String!
     title: String!
+    todos: [Todo!]!
   }
 
   input UserInput {

@@ -7,7 +7,7 @@ import { generateMetadataSortKey } from '../../../libs/helpers';
 
 export default {
   Mutation: {
-    createUser: async (parent, args, { dynamodb }, info) => {
+    createUser: async (parent, args, { dynamodb }, info): Promise<User> => {
       const { name, title }: UserInput = args.data;
 
       const user: User = {
@@ -29,7 +29,8 @@ export default {
       };
 
       try {
-        const res = await dynamodb.put(params).promise();
+        await dynamodb.put(params).promise();
+
         return user;
       } catch (err) {
         throw err;

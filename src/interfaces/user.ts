@@ -1,6 +1,6 @@
 export interface UserInput {
   name: string;
-  title: String;
+  title: string;
 }
 
 export interface User extends UserInput{
