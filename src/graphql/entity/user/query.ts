@@ -4,7 +4,7 @@ import env from '../../../libs/env';
 
 export default {
   Query: {
-    getUsers: async (parent, args, { dynamodb }, info) => {
+    getUsers: async (parent, args, { dynamodb }, info): Promise<User[]> => {
       const params = {
         TableName: env.DYNAMODB_TABLE_NAME,
         KeyConditionExpression: `pk = :pk AND begins_with(sk, :prefix)`,
@@ -18,8 +18,10 @@ export default {
         const result = await dynamodb.query(params).promise();
 
         const users: User[] = result.Items.map((user): User => {
+          const [_, userID] = user.sk.split('::');
+
           return {
-            userID: user.sk.split('::')[1],
+            userID,
             name: user.name,
             title: user.title,
           };
