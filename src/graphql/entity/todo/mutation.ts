@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import type { Todo } from '../../../interfaces/todo';
 import { generateTodoSortKey } from '../../../libs/helpers'
+import env from '../../../libs/env';
 
 export default {
   Mutation: {
@@ -9,14 +10,14 @@ export default {
         const { userID, content } = args;
 
         const newTodo = {
-          pk: process.env.TODO_APP_PK,
+          pk: env.TODO_APP_PK,
           sk: generateTodoSortKey(userID, nanoid()),
           content: content,
           isCompleted: false,
         };
 
         const params = {
-          TableName: process.env.DYNAMODB_TABLE_NAME,
+          TableName: env.DYNAMODB_TABLE_NAME,
           Item: newTodo,
           ConditionExpression:
             'attribute_not_exists(pk) AND attribute_not_exists(sk)',
@@ -57,9 +58,9 @@ export default {
         const updateExpression = 'SET ' + updateAttributes.join(',');
 
         const params = {
-          TableName: process.env.DYNAMODB_TABLE_NAME,
+          TableName: env.DYNAMODB_TABLE_NAME,
           Key: {
-            pk: process.env.TODO_APP_PK,
+            pk: env.TODO_APP_PK,
             sk: generateTodoSortKey(userID, todoID),
           },
           ConditionExpression: 'attribute_exists(pk) AND attribute_exists(sk)',
@@ -88,9 +89,9 @@ export default {
         const { userID, todoID } = args;
 
         const params = {
-          TableName: process.env.DYNAMODB_TABLE_NAME,
+          TableName: env.DYNAMODB_TABLE_NAME,
           Key: {
-            pk: process.env.TODO_APP_PK,
+            pk: env.TODO_APP_PK,
             sk: generateTodoSortKey(userID, todoID),
           },
           ConditionExpression: 'attribute_exists(pk) AND attribute_exists(sk)',

@@ -1,19 +1,20 @@
 import type { Todo } from '../../../interfaces/todo';
 import { generateTodoSortKey } from '../../../libs/helpers';
+import env from '../../../libs/env';
 
 export default {
   Query: {
     getTodos: async (parent, args, { dynamodb }, info): Promise<Todo[]> => {
       try {
         const params = {
-          TableName: process.env.DYNAMODB_TABLE_NAME,
+          TableName: env.DYNAMODB_TABLE_NAME,
           KeyConditionExpression: `#pk = :pk and begins_with(#sk, :sk)`,
           ExpressionAttributeNames:{
             "#pk": "pk",
             "#sk": 'sk'
           },
           ExpressionAttributeValues: {
-            ':pk': process.env.TODO_APP_PK,
+            ':pk': env.TODO_APP_PK,
             ':sk': generateTodoSortKey()
           },
         };
@@ -41,14 +42,14 @@ export default {
       try {
         const { userID } = args;
         const params = {
-          TableName: process.env.DYNAMODB_TABLE_NAME,
+          TableName: env.DYNAMODB_TABLE_NAME,
           KeyConditionExpression: `#pk = :pk and begins_with(#sk, :sk)`,
           ExpressionAttributeNames:{
             "#pk": "pk",
             "#sk": 'sk'
           },
           ExpressionAttributeValues: {
-            ':pk': process.env.TODO_APP_PK,
+            ':pk': env.TODO_APP_PK,
             ':sk': generateTodoSortKey(userID)
           },
         };
