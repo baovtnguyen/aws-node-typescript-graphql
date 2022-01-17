@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { Todo } from '../../../interfaces/todo';
-import { generateTodoSortKey } from '../../../libs/helpers'
+import { generateTodoSortKey } from '../../../libs/helpers';
 import env from '../../../libs/env';
 
 export default {
@@ -8,6 +8,10 @@ export default {
     createTodo: async (parent, args, { dynamodb }, info): Promise<Todo> => {
       try {
         const { userID, content } = args;
+
+        if (userID.trim().length === 0 || content.trim().length === 0) {
+          throw new Error('userID and content cannot be empty');
+        }
 
         const newTodo = {
           pk: env.TODO_APP_PK,
@@ -25,7 +29,7 @@ export default {
 
         await dynamodb.put(params).promise();
 
-        const [ _, returnUserID, returnTodoID ] = newTodo.sk.split('::');
+        const [_, returnUserID, returnTodoID] = newTodo.sk.split('::');
 
         return {
           userID: returnUserID,
@@ -40,6 +44,14 @@ export default {
     updateTodo: async (parent, args, { dynamodb }, info): Promise<Todo> => {
       try {
         const { userID, todoID, content, isCompleted } = args.todo;
+
+        if (
+          userID.trim().length === 0 ||
+          todoID.trim().length === 0 ||
+          content.trim().length === 0
+        ) {
+          throw new Error('userID, todoID and content cannot be empty');
+        }
         const updateAttributes = [];
         const expressionAttributeNames = {};
         const expressionAttributeValues = {};
@@ -72,7 +84,7 @@ export default {
 
         const res = await dynamodb.update(params).promise();
         const returnTodo = res.Attributes;
-        const [ _, returnUserID, returnTodoID ] = returnTodo.sk.split('::');
+        const [_, returnUserID, returnTodoID] = returnTodo.sk.split('::');
 
         return {
           userID: returnUserID,
@@ -81,12 +93,20 @@ export default {
           isCompleted: returnTodo.isCompleted,
         };
       } catch (err) {
-        return err;
+        if (err.code === 'ConditionalCheckFailedException') {
+          throw new Error(
+            'Todo with the provided user and todo does not exist'
+          );
+        } else throw err;
       }
     },
     deleteTodo: async (parent, args, { dynamodb }, info): Promise<Todo> => {
       try {
         const { userID, todoID } = args;
+
+        if (userID.trim().length === 0 || todoID.trim().length === 0) {
+          throw new Error('userID and todoID cannot be empty');
+        }
 
         const params = {
           TableName: env.DYNAMODB_TABLE_NAME,
@@ -101,7 +121,7 @@ export default {
         const res = await dynamodb.delete(params).promise();
 
         const returnTodo = res.Attributes;
-        const [ _, returnUserID, returnTodoID ] = returnTodo.sk.split('::');
+        const [_, returnUserID, returnTodoID] = returnTodo.sk.split('::');
 
         return {
           userID: returnUserID,
@@ -110,7 +130,12 @@ export default {
           isCompleted: returnTodo.isCompleted,
         };
       } catch (err) {
-        return err;
+        if (err.code === 'ConditionalCheckFailedException') {
+          throw new Error(
+            'Todo with the provided user and todo does not exist'
+          );
+        }
+        throw err;
       }
     },
   },

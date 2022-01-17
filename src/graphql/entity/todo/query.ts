@@ -41,6 +41,10 @@ export default {
     getTodosOfUser: async (parent, args, { dynamodb }, info): Promise<Todo[]> => {
       try {
         const { userID } = args;
+
+        if (userID.trim().length === 0) {
+          throw new Error('userID cannot be empty');
+        }
         const params = {
           TableName: env.DYNAMODB_TABLE_NAME,
           KeyConditionExpression: `#pk = :pk and begins_with(#sk, :sk)`,
