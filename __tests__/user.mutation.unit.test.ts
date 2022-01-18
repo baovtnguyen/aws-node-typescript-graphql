@@ -12,44 +12,51 @@ const context = {
 };
 
 // Test cases
-test('should create a user', async () => {
-  // Arrange
-  const args = {
-    data: {
-      name: 'Tieu Bao',
-      title: 'Fresher Software Developer',
-    },
-  };
-
-  context.dynamodb.put = jest.fn((params) => {
-    return {
-      promise() {
-        return Promise.resolve(true);
+describe('User Mutation Resolvers -> Create A User', () => {
+  test('Should create a user when everything is OK', async () => {
+    // Arrange
+    const args = {
+      data: {
+        name: 'Tieu Bao',
+        title: 'Fresher Software Developer',
       },
     };
+
+    context.dynamodb.put = jest.fn((params) => {
+      return {
+        promise() {
+          return Promise.resolve(true);
+        },
+      };
+    });
+
+    // Act
+    const res = await createUser(null, args, context, null);
+
+    // Assert
+    expect(res).toHaveProperty('userID');
+    expect(res).toMatchObject({ name: args.data.name, title: args.data.title });
   });
 
-  // Act
-  const res = await createUser(null, args, context, null);
+  test('Should throw an error when name is empty', async () => {
+    // Arrange
+    const args = {
+      data: { name: '  ', title: 'Learn Unit Test'},
+    }
 
-  // Assert
-  expect(res).toHaveProperty('userID');
-  expect(res).toMatchObject({ name: args.data.name, title: args.data.title });
-});
-
-test('should throw error when create a user', async () => {
-  // Arrange
-  context.dynamodb.put = jest.fn((params) => {
-    return {
-      promise() {
-        return Promise.reject(new Error('error'));
-      },
-    };
+    // Act
+    // Assert
+    await expect(createUser(null, args, context, null)).rejects.toThrow();
   });
 
-  // Act
-  // Assert
-  expect(createUser(null, { data: {} }, context, null)).rejects.toThrowError(
-    'error'
-  );
+  test('Should throw an error when title is empty', async () => {
+    // Arrange
+    const args = {
+      data: { name: 'Tieu bao', title: '     '},
+    }
+
+    // Act
+    // Assert
+    await expect(createUser(null, args, context, null)).rejects.toThrow();
+  });
 });
