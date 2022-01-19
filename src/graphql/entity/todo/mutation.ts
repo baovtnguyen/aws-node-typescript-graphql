@@ -93,11 +93,10 @@ export default {
           isCompleted: returnTodo.isCompleted,
         };
       } catch (err) {
-        if (err.code === 'ConditionalCheckFailedException') {
-          throw new Error(
-            'Todo with the provided user and todo does not exist'
-          );
-        } else throw err;
+        if (err.name === 'ConditionalCheckFailedException') {
+          err.message = 'Todo with the provided userID and todoID does not exist';
+        }
+        throw err;
       }
     },
     deleteTodo: async (parent, args, { dynamodb }, info): Promise<Todo> => {
@@ -130,10 +129,8 @@ export default {
           isCompleted: returnTodo.isCompleted,
         };
       } catch (err) {
-        if (err.code === 'ConditionalCheckFailedException') {
-          throw new Error(
-            'Todo with the provided user and todo does not exist'
-          );
+        if (err.name === 'ConditionalCheckFailedException') {
+          err.message = 'Todo with the provided userID and todoID does not exist';
         }
         throw err;
       }
