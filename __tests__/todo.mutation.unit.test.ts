@@ -109,7 +109,8 @@ describe('Todo Mutation Resolvers', () => {
       };
 
       // Act
-      const createTodoFn = createTodo(
+      const createTodoFn = createTodo.bind(
+        null,
         undefined,
         mArgs,
         mContext,
@@ -117,7 +118,9 @@ describe('Todo Mutation Resolvers', () => {
       );
 
       // Assert
-      expect(createTodoFn).rejects.toThrowError('userID and content cannot be empty');
+      expect(createTodoFn()).rejects.toThrowError(
+        'userID and content cannot be empty'
+      );
     });
 
     it('should throw network error when the connection to DB failed due to network', async () => {
@@ -135,10 +138,16 @@ describe('Todo Mutation Resolvers', () => {
       mnanoid.mockReturnValue(mockedNanoIDReturnValue);
 
       // Act
-      const createTodoFn = createTodo(undefined, mArgs, mContext, undefined);
+      const createTodoFn = createTodo.bind(
+        null,
+        undefined,
+        mArgs,
+        mContext,
+        undefined
+      );
 
       // Assert
-      expect(createTodoFn).rejects.toThrowError('network');
+      expect(createTodoFn()).rejects.toThrowError('network');
 
       // Assert
       expect(mDynamoDb.put).toBeCalledTimes(1);
@@ -226,7 +235,8 @@ describe('Todo Mutation Resolvers', () => {
       };
 
       // Act
-      const updateTodoFn = updateTodo(
+      const updateTodoFn = updateTodo.bind(
+        null,
         undefined,
         mArgs,
         mContext,
@@ -234,7 +244,9 @@ describe('Todo Mutation Resolvers', () => {
       );
 
       // Assert
-      expect(updateTodoFn).rejects.toThrowError('userID, todoID and content cannot be empty');
+      expect(updateTodoFn()).rejects.toThrowError(
+        'userID, todoID and content cannot be empty'
+      );
     });
 
     it('should throw error when the provided todo does not exist', async () => {
@@ -251,17 +263,28 @@ describe('Todo Mutation Resolvers', () => {
       const mDynamoDb = new AWS.DynamoDB.DocumentClient();
       const mContext = { dynamodb: mDynamoDb };
       const mError = {
-        code: 'ConditionalCheckFailedException',
+        name: 'ConditionalCheckFailedException',
+        message: 'The conditional request failed',
+        statusCode: 400,
       };
       updateMockedPromise.mockRejectedValue(mError);
 
       // Act
-      const updateTodoFn = updateTodo(undefined, mArgs, mContext, undefined);
-
-      // Assert
-      expect(updateTodoFn).rejects.toThrowError(
-        'Todo with the provided user and todo does not exist'
+      const updateTodoFn = updateTodo.bind(
+        null,
+        undefined,
+        mArgs,
+        mContext,
+        undefined
       );
+
+      //Assert
+      const expectedError = {
+        name: mError.name,
+        message: 'Todo with the provided userID and todoID does not exist',
+        statusCode: mError.statusCode,
+      };
+      await expect(updateTodoFn()).rejects.toMatchObject(expectedError);
 
       // Assert
       expect(mDynamoDb.update).toBeCalledTimes(1);
@@ -302,10 +325,16 @@ describe('Todo Mutation Resolvers', () => {
       updateMockedPromise.mockRejectedValue(mError);
 
       // Act
-      const updateTodoFn = updateTodo(undefined, mArgs, mContext, undefined);
+      const updateTodoFn = updateTodo.bind(
+        null,
+        undefined,
+        mArgs,
+        mContext,
+        undefined
+      );
 
       // Assert
-      expect(updateTodoFn).rejects.toThrowError('network');
+      expect(updateTodoFn()).rejects.toThrowError('network');
 
       // Assert
       expect(mDynamoDb.update).toBeCalledTimes(1);
@@ -384,7 +413,8 @@ describe('Todo Mutation Resolvers', () => {
       };
 
       // Act
-      const deleteTodoFn = deleteTodo(
+      const deleteTodoFn = deleteTodo.bind(
+        null,
         undefined,
         mArgs,
         mContext,
@@ -392,7 +422,9 @@ describe('Todo Mutation Resolvers', () => {
       );
 
       // Assert
-      expect(deleteTodoFn).rejects.toThrowError('userID and todoID cannot be empty');
+      expect(deleteTodoFn()).rejects.toThrowError(
+        'userID and todoID cannot be empty'
+      );
     });
 
     it('should should throw error when the provided todo does not exist', async () => {
@@ -405,18 +437,28 @@ describe('Todo Mutation Resolvers', () => {
       const mDynamoDb = new AWS.DynamoDB.DocumentClient();
       const mContext = { dynamodb: mDynamoDb };
       const mError = {
-        code: 'ConditionalCheckFailedException',
+        name: 'ConditionalCheckFailedException',
+        message: 'The conditional request failed',
+        statusCode: 400,
       };
 
       deleteMockedPromise.mockRejectedValue(mError);
 
-      // Act
-      const deleteTodoFn = deleteTodo(undefined, mArgs, mContext, undefined);
-
-      // Assert
-      expect(deleteTodoFn).rejects.toThrowError(
-        'Todo with the provided user and todo does not exist'
+      const deleteTodoFn = deleteTodo.bind(
+        null,
+        undefined,
+        mArgs,
+        mContext,
+        undefined
       );
+
+      //Assert
+      const expectedError = {
+        name: mError.name,
+        message: 'Todo with the provided userID and todoID does not exist',
+        statusCode: mError.statusCode,
+      };
+      await expect(deleteTodoFn()).rejects.toMatchObject(expectedError);
 
       expect(mDynamoDb.delete).toBeCalledTimes(1);
       expect(mDynamoDb.delete).toHaveBeenCalledWith({
@@ -443,12 +485,17 @@ describe('Todo Mutation Resolvers', () => {
       deleteMockedPromise.mockRejectedValue(mError);
 
       // Act
-      const deleteTodoFn = deleteTodo(undefined, mArgs, mContext, undefined);
+      const deleteTodoFn = deleteTodo.bind(
+        null,
+        undefined,
+        mArgs,
+        mContext,
+        undefined
+      );
 
       // Assert
-      expect(deleteTodoFn).rejects.toThrowError('network');
+      expect(deleteTodoFn()).rejects.toThrowError('network');
 
-      // Assert
       expect(mDynamoDb.delete).toBeCalledTimes(1);
       expect(mDynamoDb.delete).toHaveBeenCalledWith({
         TableName: env.DYNAMODB_TABLE_NAME,
