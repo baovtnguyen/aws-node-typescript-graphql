@@ -98,11 +98,16 @@ describe('Todo Query Resolvers', () => {
       queryMockedPromise.mockRejectedValue(mError);
 
       // Act
-      const getTodosFn = getTodos(undefined, undefined, mContext, undefined);
-
+      const getTodosFn = getTodos.bind(
+        null,
+        undefined,
+        undefined,
+        mContext,
+        undefined
+      );
 
       // Assert
-      expect(getTodosFn).rejects.toThrowError('network');
+      expect(getTodosFn()).rejects.toThrowError('network');
 
       expect(mDynamoDb.query).toBeCalledTimes(1);
 
@@ -182,21 +187,27 @@ describe('Todo Query Resolvers', () => {
       ]);
     });
 
-      it('should throw error when userID is empty string', async () => {
-        //Arrange
-        const mArgs =  {
-          userID: ''
-        };
-        const mContext = {
-            dynamodb: {}
-        }
+    it('should throw error when userID is empty string', async () => {
+      //Arrange
+      const mArgs = {
+        userID: '',
+      };
+      const mContext = {
+        dynamodb: {},
+      };
 
-        // Act
-        const getTodosOfUserFn = getTodosOfUser(undefined, mArgs, mContext, undefined);
+      // Act
+      const getTodosOfUserFn = getTodosOfUser.bind(
+        null,
+        undefined,
+        mArgs,
+        mContext,
+        undefined
+      );
 
-        // Assert
-        expect(getTodosOfUserFn).rejects.toThrowError('userID cannot be empty');
-      });
+      // Assert
+      expect(getTodosOfUserFn()).rejects.toThrowError('userID cannot be empty');
+    });
 
     it('should throw network error when the connection to DB failed due to network', async () => {
       // Arrange
@@ -209,7 +220,8 @@ describe('Todo Query Resolvers', () => {
       queryMockedPromise.mockRejectedValue(mError);
 
       // Act
-      const getTodosOfUserFn = getTodosOfUser(
+      const getTodosOfUserFn = getTodosOfUser.bind(
+        null,
         undefined,
         mArgs,
         mContext,
@@ -217,7 +229,7 @@ describe('Todo Query Resolvers', () => {
       );
 
       // Assert
-      expect(getTodosOfUserFn).rejects.toThrowError('network');
+      expect(getTodosOfUserFn()).rejects.toThrowError('network');
 
       // Assert
       expect(mDynamoDb.query).toBeCalledTimes(1);
